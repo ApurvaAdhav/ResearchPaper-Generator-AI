@@ -3,332 +3,204 @@ import generator as gen_module
 from generator import PaperGenerator
 from exporter import DocumentExporter
 import importlib
+import time
 
-# Reload generator for dev
+# Reload generator logic
 importlib.reload(gen_module)
 
-# Page Config
 st.set_page_config(
-    page_title="ResearchDraft AI - NextGen",
-    page_icon="✨",
+    page_title="ResearchIntelligence AI",
+    page_icon="🏛️",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
 # ==============================================================================
-# RESEARCHDRAFT AI - HIGH IMPACT / VIBRANT UI
+# STRICT ACADEMIC LIGHT THEME
 # ==============================================================================
-
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+    /* RESET DRACULA / DARK MODES */
+    @import url('https://fonts.googleapis.com/css2?family=Times+New+Roman:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
 
     :root {
-        --primary: #4f46e5;
-        --secondary: #ec4899;
-        --accent: #06b6d4;
-        --bg-color: #f8fafc;
-        --card-bg: rgba(255, 255, 255, 0.65);
-        --text-color: #0f172a;
+        --bg-white: #ffffff;
+        --sidebar-bg: #f8f9fa;
+        --text-dark: #2c3e50;
+        --accent-teal: #008080;
+        --border-light: #e9ecef;
     }
 
-
-    /* --- ANIMATIONS --- */
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-    /* --- GLOBAL LAYOUT --- */
+    /* MAIN CONTAINER */
     .stApp {
-        background-color: #f0f2f5;
-        font-family: 'Times New Roman', serif; /* Academic feel starts here */
-        color: #1a1a1a;
+        background-color: var(--bg-white);
+        color: var(--text-dark);
+        font-family: 'Roboto', sans-serif;
     }
 
-    /* --- SIDEBAR (Deep Professional Navy) --- */
+    /* SIDEBAR */
     section[data-testid="stSidebar"] {
-        background-color: #001f3f; /* Navy Blue */
-        border-right: 1px solid #001f3f;
+        background-color: var(--sidebar-bg);
+        border-right: 1px solid var(--border-light);
     }
-    section[data-testid="stSidebar"] h1, 
-    section[data-testid="stSidebar"] h2, 
-    section[data-testid="stSidebar"] h3, 
-    section[data-testid="stSidebar"] p, 
+    section[data-testid="stSidebar"] h1,
+    section[data-testid="stSidebar"] h2,
     section[data-testid="stSidebar"] label,
     section[data-testid="stSidebar"] span {
-        color: #ffffff !important;
-        font-family: 'Helvetica Neue', sans-serif;
-    }
-    section[data-testid="stSidebar"] .stTextInput input {
-        background-color: #003366 !important;
-        border: 1px solid #004080;
-        color: white;
-    }
-
-    /* --- HERO & HEADERS --- */
-    h1, h2, h3 {
-        font-family: 'Georgia', serif;
-        color: #001f3f;
-        font-weight: 700;
-    }
-    .hero-text {
-        font-family: 'Georgia', serif;
-        font-size: 3rem;
-        color: #001f3f;
-        text-align: center;
-        margin-bottom: 0.5rem;
-        border-bottom: 2px solid #bfa15f; /* Gold underline */
-        display: inline-block;
-        padding-bottom: 10px;
+        color: #333333 !important;
     }
     
-    /* --- CARDS (Minimalist White) --- */
-    .glass-card {
-        background: #ffffff;
-        border: 1px solid #d1d5db;
+    /* INPUTS */
+    .stTextInput input, .stTextArea textarea, .stSelectbox div[data-baseweb="select"] {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        border: 1px solid #ced4da;
+    }
+
+    /* HEADERS */
+    h1, h2, h3 {
+        color: #1a1a1a;
+        font-family: 'Times New Roman', serif;
+    }
+
+    /* KPIS / METRICS */
+    .kpi-card {
+        background: #f8f9fa;
+        border-left: 4px solid var(--accent-teal);
+        padding: 15px;
         border-radius: 4px;
-        padding: 25px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        margin-bottom: 20px;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
     }
+    .kpi-val { font-size: 1.5rem; font-weight: bold; color: var(--accent-teal); }
+    .kpi-lbl { font-size: 0.8rem; text-transform: uppercase; color: #666; }
 
-    /* --- INPUTS --- */
-    .stTextInput input, .stTextArea textarea {
-        border-radius: 2px;
-        border: 1px solid #9ca3af;
-        padding: 10px;
-        font-size: 16px;
-        font-family: 'Arial', sans-serif;
-    }
-    .stTextInput input:focus, .stTextArea textarea:focus {
-        border-color: #001f3f;
-        box-shadow: 0 0 0 1px #001f3f;
-    }
-
-    /* --- BUTTONS (Gold/Navy) --- */
-    button[kind="primary"] {
-        background-color: #001f3f;
-        color: #bfa15f; /* Gold Text */
-        border: 1px solid #bfa15f;
-        border-radius: 2px;
-        font-weight: bold;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        transition: all 0.2s;
-    }
-    button[kind="primary"]:hover {
-        background-color: #003366;
-        color: #fff;
-    }
-
-    /* --- A4 PREVIEW (Realism) --- */
+    /* PAPER VIEW (IEEE STYLE) */
     .paper-preview {
-        width: 210mm;
-        min-height: 297mm;
-        padding: 25mm;
-        margin: 20px auto;
         background: white;
-        box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        padding: 40px;
         font-family: 'Times New Roman', serif;
-        font-size: 11pt; /* Standard IEEE size */
+        border: 1px solid #ddd;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        color: black;
         line-height: 1.2;
-        color: #000;
         text-align: justify;
     }
-    .paper-preview h1 {
-        font-size: 24pt;
-        text-align: center;
-        margin-bottom: 10pt;
+    .paper-preview h1 { text-align: center; font-size: 24pt; margin-bottom: 5px; }
+    .paper-preview h3 { 
+        font-size: 14pt; /* EXACT REQUESTED SIZE */
+        text-transform: uppercase; 
+        font-weight: bold; 
+        margin-top: 15px; 
     }
-    .paper-preview p {
-        margin-bottom: 10pt;
-    }
-
-
-    /* --- A4 PAPER FORMAT (STRICT) --- */
-    .paper-preview {
-        width: 210mm;
-        min-height: 297mm;
-        padding: 25mm; /* 2.5cm Margin */
-        margin: 40px auto;
-        background: #ffffff;
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1), 0 0 5px rgba(0,0,0,0.05); /* Realistic Paper Drop Shadow */
-        border: none;
-        
-        /* Typography for Paper */
-        font-family: 'Times New Roman', serif;
-        font-size: 12pt;
-        line-height: 1.5;
-        color: #000;
-        text-align: justify;
-    }
-    .paper-preview h1 {
-        font-family: 'Times New Roman', serif;
-        font-size: 24pt;
-        text-align: center;
-        color: #000;
-        margin-bottom: 12pt;
-    }
-    .paper-preview h3 {
-        font-family: 'Times New Roman', serif;
-        font-size: 14pt;
-        text-transform: uppercase;
-        margin-top: 18pt;
-        border-bottom: 1px solid #000;
-        padding-bottom: 4pt;
-        color: #000;
-    }
+    .author-block { text-align: center; font-size: 11pt; font-style: italic; margin-bottom: 20px; }
 
 </style>
 """, unsafe_allow_html=True)
 
-# Session Manager
 if 'paper_data' not in st.session_state: st.session_state.paper_data = {}
 if 'generated' not in st.session_state: st.session_state.generated = False
 
 def main():
     
-    # --- MODERN SIDEBAR ---
+    # --- SIDEBAR ---
     with st.sidebar:
-        st.title("ResearchDraft")
-        st.markdown("**AI-Powered Academic Engine**")
-        st.markdown("---")
+        st.title("ResearchIntelligence")
+        st.write("Academic Edition v2.1")
         
-        st.caption("Settings")
-        api_key = st.text_input("Groq API Key", type="password", placeholder="gsk_...")
+        with st.expander("Configuration", expanded=True):
+            api_key = st.text_input("Groq API Key", type="password")
+            model = st.selectbox("Model", ["llama-3.3-70b-versatile", "mixtral-8x7b-32768"])
         
-        st.caption("Model Configuration")
-        model = st.selectbox("Select Model", ["llama-3.3-70b-versatile", "mixtral-8x7b-32768"], index=0)
+        st.header("Parameters")
+        type_ = st.selectbox("Paper Type", ["IEEE Conference", "Review Article", "Survey", "Proposal"])
+        depth = st.select_slider("Depth", ["Brief", "Standard", "In-Depth"], value="Standard")
         
-        st.markdown("<br>", unsafe_allow_html=True)
-        st.caption("Writing Style")
-        venue = st.selectbox("Target Venue", ["IEEE Access", "Nature", "NeurIPS", "CVPR"])
-        style = st.slider("Creativity Index", 0.0, 1.0, 0.5)
+        st.info("System Ready")
 
-    # --- HERO SECTION ---
+    # --- MAIN AREA ---
     if not st.session_state.generated:
-        st.markdown('<div class="hero-text">ResearchDraft AI</div>', unsafe_allow_html=True)
-        st.markdown('<p style="text-align:left; color:#64748b; font-size:1.2rem; margin-bottom:40px;">Craft journal-ready research papers with the power of modern LLMs.</p>', unsafe_allow_html=True)
-
-        # --- WIZARD LAYOUT ---
-        st.markdown('<div class="glass-card">', unsafe_allow_html=True)
-        st.markdown('<div class="section-header">✨ Project Initialization</div>', unsafe_allow_html=True)
+        st.markdown("# 🏛️ Academic Research Workbench")
+        st.markdown("Generate IEEE-compliant drafts with citation intelligence.")
         
-        c1, c2 = st.columns([2, 1])
-        with c1:
-            title = st.text_input("Research Title", placeholder="e.g. Self-Supervised Learning for Medical Imaging")
-        with c2:
-            domain = st.text_input("Domain", placeholder="e.g. Computer Vision")
+        col1, col2 = st.columns([2, 1])
+        with col1:
+            title = st.text_input("Title of Research", placeholder="Self-Supervised Learning in Medical Imaging")
+            problem = st.text_area("Problem Statement", height=100)
+            domain = st.text_input("Domain / Field")
+        with col2:
+            authors = st.text_area("Author Details", height=100, placeholder="Name\nDept, University")
         
-        st.markdown("<br>", unsafe_allow_html=True)
-        
-        c3, c4 = st.columns(2)
-        with c3:
-            authors = st.text_area("Author Metadata", placeholder="Name | Affiliation | Email", height=100)
-        with c4:
-            references = st.text_area("Reference Context", placeholder="Paste existing citations here...", height=100)
-            
-        st.markdown("<br>", unsafe_allow_html=True)
-        problem = st.text_area("Problem Statement & Objectives", placeholder="Define the core research gap...", height=120)
-        
-        st.markdown("</div>", unsafe_allow_html=True) # End Card
-
-        # --- GENERATE BUTTON ---
-        col_center_1, col_center_2, col_center_3 = st.columns([1, 2, 1])
-        with col_center_2:
-            generate = st.button("🚀 IGNITE GENERATION ENGINE", type="primary", use_container_width=True)
-
-        if generate:
+        if st.button("Generate Full Menuscript", type="primary"):
             if not api_key:
-                st.toast("⚠️ Please provide a valid API Key provided!", icon="🔒")
+                st.error("Please enter API Key.")
             else:
-                with st.status("🧠 **Orchestrating AI Agents...**", expanded=True) as status:
-                    st.write("Initializing Llama-3 Inference...")
-                    gen = PaperGenerator(api_key, model)
-                    
-                    inputs = {"title": title, "domain": domain, "problem": problem, "style": "Academic", "venue": venue, "references": references}
-                    sections = ['Abstract', 'Introduction', 'Literature Review', 'Methodology', 'Results and Discussion', 'Future Work', 'Conclusion', 'References']
-                    
-                    st.session_state.paper_data = {"Title": title, "Authors": authors}
-                    
-                    progress_bar = st.progress(0)
-                    for i, sec in enumerate(sections):
-                        status.write(f"✍️ **Drafting {sec}...**")
-                        res = gen.generate_section(sec, inputs, "")
-                        st.session_state.paper_data[sec] = res
-                        progress_bar.progress((i + 1) / len(sections))
-                    
+                progress = st.status("⚡ Agent active: Drafting Sections...", expanded=True)
+                
+                gen = PaperGenerator(api_key, model)
+                inputs = {'title': title, 'problem': problem, 'domain': domain, 'type': type_, 'depth': depth}
+                
+                # Single Call Batch
+                result = gen.generate_full_paper(inputs)
+                
+                if "Error" in result:
+                    st.error(result["Error"])
+                else:
+                    st.session_state.paper_data = result
+                    st.session_state.paper_data['Title'] = title
+                    st.session_state.paper_data['Authors'] = authors
                     st.session_state.generated = True
-                    status.update(label="✅ Manuscript Compiled Successfully!", state="complete", expanded=False)
+                    progress.update(label="Complete!", state="complete", expanded=False)
                     st.rerun()
 
     else:
-        # --- DASHBOARD LAYOUT ---
-        st.markdown('<div class="glass-card" style="padding: 20px; border-left: 5px solid #001f3f;">'
-                    '<h2 style="margin:0; font-family: \'Georgia\', serif; color: #001f3f;">Manuscript Composition</h2>'
-                    '<p style="margin:0; color:#555; font-size: 14px;">Professional Academic Editor</p>'
-                    '</div>', unsafe_allow_html=True)
+        # --- DASHBOARD & VIEW ---
+        c1, c2, c3 = st.columns(3)
         
-        tabs = st.tabs(["📝 Editor Studio", "📄 Print Preview", "💾 Export Hub"])
+        # Metrics using new generator methods
+        full_text = " ".join([v for k,v in st.session_state.paper_data.items() if k not in ['Title', 'Authors']])
+        gen = PaperGenerator() 
+        qual = gen.analyze_quality(full_text)
+        orig = gen.estimate_originality(full_text)
         
-        with tabs[0]:
-            st.markdown("### ✍️ Content Editor")
-            st.caption("Edit each section individually. Changes update the preview automatically.")
+        c1.markdown(f'<div class="kpi-card"><div class="kpi-val">{qual["score"]}</div><div class="kpi-lbl">Quality Score</div></div>', unsafe_allow_html=True)
+        c2.markdown(f'<div class="kpi-card"><div class="kpi-val">{qual["level"]}</div><div class="kpi-lbl">Maturity</div></div>', unsafe_allow_html=True)
+        c3.markdown(f'<div class="kpi-card"><div class="kpi-val">{len(full_text.split())}</div><div class="kpi-lbl">Words</div></div>', unsafe_allow_html=True)
+        
+        st.markdown("<br>", unsafe_allow_html=True)
+        
+        tab1, tab2 = st.tabs(["📄 Menuscript View", "📥 Export"])
+        
+        with tab1:
+            # IEEE VIEW
+            pdata = st.session_state.paper_data
             
-            for section in ['Abstract', 'Introduction', 'Literature Review', 'Methodology', 'Results and Discussion', 'Future Work', 'Conclusion', 'References']:
-                # Icon mapping
-                icons = {
-                    "Abstract": "📝", "Introduction": "🚀", "Literature Review": "📚",
-                    "Methodology": "⚙️", "Results and Discussion": "📊", "Future Work": "🔮",
-                    "Conclusion": "🏁", "References": "🔗"
-                }
-                icon = icons.get(section, "📄")
-                
-                with st.expander(f"{icon} {section}", expanded=(section == "Abstract")):
-                    current_val = st.session_state.paper_data.get(section, "")
-                    st.session_state.paper_data[section] = st.text_area(
-                        f"Edit {section}", 
-                        current_val, 
-                        height=250, 
-                        key=f"text_{section}",
-                        label_visibility="collapsed"
-                    )
-
-        with tabs[1]:
-            # Construct the entire paper HTML to ensure CSS wrapper applies correctly
-            # NOTE: We use strict left-alignment to avoid Markdown interpreting indented blocks as code.
-            title = st.session_state.paper_data.get('Title', 'Untitled Manuscript')
-            authors = st.session_state.paper_data.get('Authors', 'Author Details Not Provided')
+            html = f"""
+            <div class="paper-preview">
+                <h1>{pdata.get('Title')}</h1>
+                <div class="author-block">{pdata.get('Authors')}</div>
+                <hr>
+            """
             
-            paper_html = f"""<div class="paper-preview">
-<h1 style="text-align:center;">{title}</h1>
-<p style="text-align:center; font-style:italic; margin-bottom: 24px;">{authors}</p>
-<hr style="border: 0; border-top: 1px solid #000; margin: 20px 0;">"""
+            ordering = ['Abstract', 'Index Terms', 'Introduction', 'Literature Review', 'Methodology', 'Results', 'Conclusion', 'References']
             
-            for s in ['Abstract', 'Introduction', 'Literature Review', 'Methodology', 'Results and Discussion', 'Future Work', 'Conclusion', 'References']:
-                content = st.session_state.paper_data.get(s, "")
-                if content:
-                    # Convert newlines to breaks for HTML rendering
-                    formatted_content = content.replace("\n", "<br>")
-                    paper_html += f"""
-<div class="paper-section">
-<h3>{s}</h3>
-<p>{formatted_content}</p>
-</div>"""
+            for section in ordering:
+                if section in pdata:
+                    html += f"<h3><font size=5>{section.upper()}</font></h3>"
+                    html += f"<p>{pdata[section]}</p>"
             
-            # --- PAGE NUMBERS ---
-            paper_html += """
-<div style="margin-top: 40px; text-align: center; border-top: 1px solid #ccc; padding-top: 10px; color: #666; font-size: 10pt;">
-    Page 1
-</div>
-</div>"""
-            st.markdown(paper_html, unsafe_allow_html=True)
-
-        with tabs[2]:
-            st.markdown('<div class="glass-card" style="text-align:center;">', unsafe_allow_html=True)
-            st.markdown("### 📥 Download Manuscript")
-            c1, c2 = st.columns(2)
-            c1.download_button("Word Document (.docx)", DocumentExporter.export_docx(st.session_state.paper_data), "research_paper.docx", "application/docx", use_container_width=True)
-            c2.download_button("PDF Document (.pdf)", DocumentExporter.export_pdf(st.session_state.paper_data), "research_paper.pdf", "application/pdf", use_container_width=True)
-            st.markdown('</div>', unsafe_allow_html=True)
+            html += "</div>"
+            st.markdown(html, unsafe_allow_html=True)
+        
+        with tab2:
+            c_a, c_b = st.columns(2)
+            c_a.download_button("Download PDF (Numbered)", DocumentExporter.export_pdf(st.session_state.paper_data), "paper.pdf")
+            c_b.download_button("Download DOCX", DocumentExporter.export_docx(st.session_state.paper_data), "paper.docx")
+            
+            if st.button("Start New Paper"):
+                st.session_state.generated = False
+                st.session_state.paper_data = {}
+                st.rerun()
 
 if __name__ == "__main__":
     main()

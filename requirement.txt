@@ -1,5 +1,0 @@
-streamlit
-groq
-python-docx
-reportlab
-pandas
