@@ -93,6 +93,10 @@ python app.py
 * Advanced AI fine-tuning
 
 ---
+## 🔗 Live Demo
+👉 https://researchpaper-generator-ai.streamlit.app/
+
+---
 ## 👨‍💻 Author
 
 **Apurva Adhav**
